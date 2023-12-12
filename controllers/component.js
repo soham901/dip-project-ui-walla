@@ -16,4 +16,8 @@ async function deleteComponent(id) {
     return await Component.findByIdAndDelete(id);
 }
 
-export { getComponents, getComponent, createComponent, deleteComponent };
+async function updateLinks(id, preview_link, img_link) {
+    return await Component.findByIdAndUpdate(id, { preview_link: preview_link, img_link: img_link });
+}
+
+export { getComponents, getComponent, createComponent, deleteComponent, updateLinks };

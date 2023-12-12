@@ -6,8 +6,6 @@ import dotenv from "dotenv"
 
 dotenv.config({ path: '.env' });
 
-console.log("DATA", process.env.MONGODB_URL);
-
 const app = express();
 
 app.use(cors({
@@ -28,10 +26,6 @@ connectDB();
 import componentRouter from "./routes/component.js";
 
 app.use("/component", componentRouter);
-
-app.get("/", (req, res) => {
-    res.send("Hello World");
-});
 
 app.listen(3000, () => {
     console.log("Listening on port 3000");

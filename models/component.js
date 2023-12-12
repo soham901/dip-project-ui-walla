@@ -5,9 +5,11 @@ const componentSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    code: {
+    preview_link: {
         type: String,
-        required: true,
+    },
+    img_link: {
+        type: String,
     },
 });
 
