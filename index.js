@@ -2,6 +2,11 @@ import express from "express";
 
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv"
+
+dotenv.config({ path: '.env' });
+
+console.log("DATA", process.env.MONGODB_URL);
 
 const app = express();
 

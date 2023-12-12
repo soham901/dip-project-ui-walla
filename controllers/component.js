@@ -12,4 +12,8 @@ async function createComponent(component) {
     return await Component.create(component);
 }
 
-export { getComponents, getComponent, createComponent };
+async function deleteComponent(id) {
+    return await Component.findByIdAndDelete(id);
+}
+
+export { getComponents, getComponent, createComponent, deleteComponent };

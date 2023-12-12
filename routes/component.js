@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getComponents, getComponent, createComponent } from "../controllers/component.js";
+import { getComponents, getComponent, createComponent, deleteComponent } from "../controllers/component.js";
 
 const router = Router();
 
@@ -21,9 +21,13 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-    const { title, code, description } = req.body;
-    res.send(createComponent({ title, code, description }));
+    const { title, code } = req.body;
+    res.send(createComponent({ title, code }));
     // res.send(createComponent({ title, code, description }));
+});
+
+router.delete("/:id", (req, res) => {
+    res.send(deleteComponent(req.params.id));
 });
 
 export default router;
