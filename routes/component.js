@@ -46,9 +46,9 @@ router.post("/", upload, (req, res) => {
             if (html) fs.renameSync(html.path, "public/" + id + "/" + html.originalname);
             if (css) fs.renameSync(css.path, "public/" + id + "/" + css.originalname);
             if (js) fs.renameSync(js.path, "public/" + id + "/" + js.originalname);
-            if (img) fs.renameSync(img.path, "public/" + id + "/" + img.originalname);
+            if (img) fs.renameSync(img.path, "public/" + id + "/thumbnail");
 
-            const img_link = img ? "/" + id + "/" + img.originalname : null;
+            const img_link = img ? "/" + id + "/thumbnail" : null;
             const preview_link = "/" + id + "/" + html.originalname;
 
             res.send({
@@ -79,5 +79,6 @@ router.post("/", upload, (req, res) => {
 router.delete("/:id", (req, res) => {
     res.send(deleteComponent(req.params.id));
 });
+
 
 export default router;
