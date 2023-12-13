@@ -14,9 +14,9 @@ app.use(cors({
     credentials: true
 }));
 
-// app.use(express.json({ limit: "16kb" }))
-// app.use(express.urlencoded({ limit: "16kb" }))
-// app.use(express.static("public"))
+app.use(express.json())
+app.use(express.urlencoded())
+app.use(express.static("public"))
 app.use(cookieParser())
 
 
@@ -38,9 +38,8 @@ const Comp = mongoose.model("Comp", mongoose.Schema({
 
 // app.use("/component", componentRouter);
 
-app.use(express.static("public"));
-
 app.post("/component", (req, res) => {
+    console.log(req.body);
     const { html, css, js, title } = req.body;
     const code = `
     <!DOCTYPE html>
@@ -65,12 +64,6 @@ app.post("/component", (req, res) => {
         console.log(data);
         res.send(data);
     })
-        .catch((err) => {
-            console.log(err);
-            res.send(err);
-        })
-
-    res.send(null);
 });
 
 app.get("/component", (req, res) => {
