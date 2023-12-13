@@ -5,8 +5,6 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
 import mongoose from "mongoose";
 
-import fs from "fs";
-
 dotenv.config({ path: '.env' });
 
 const app = express();
@@ -16,9 +14,9 @@ app.use(cors({
     credentials: true
 }));
 
-app.use(express.json({ limit: "16kb" }))
-app.use(express.urlencoded({ limit: "16kb" }))
-app.use(express.static("public"))
+// app.use(express.json({ limit: "16kb" }))
+// app.use(express.urlencoded({ limit: "16kb" }))
+// app.use(express.static("public"))
 app.use(cookieParser())
 
 
@@ -39,6 +37,8 @@ const Comp = mongoose.model("Comp", mongoose.Schema({
 // import componentRouter from "./routes/component.js";
 
 // app.use("/component", componentRouter);
+
+app.use(express.static("public"));
 
 app.post("/component", (req, res) => {
     const { html, css, js, title } = req.body;
