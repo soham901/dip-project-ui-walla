@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
+import fs from "fs";
 import mongoose from "mongoose";
 
 dotenv.config({ path: '.env' });
@@ -89,6 +90,11 @@ app.get("/component", (req, res) => {
             res.send(data);
         })
     }
+});
+
+app.get("/", (req, res) => {
+    const html = fs.readFileSync("public/site.html", "utf-8");
+    res.send(html);
 });
 
 app.listen(3000, () => {
