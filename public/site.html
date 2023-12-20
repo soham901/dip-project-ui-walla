@@ -26,14 +26,14 @@
     <script>
       const url = "https://ui-comp.vercel.app/component";
 
-      get();
-
       // post request to the url
       async function get() {
         const res = await fetch(url);
         const data = await res.json();
         console.log(data);
       }
+
+      get();
     </script>
   </body>
 </html>
