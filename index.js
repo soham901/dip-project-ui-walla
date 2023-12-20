@@ -144,6 +144,10 @@ app.get("/test", (req, res) => {
     res.sendFile(__dirname + "/index.html")
 });
 
+app.get("/", (req, res) => {
+    res.send("ok")
+})
+
 app.listen(3000, () => {
     console.log("Listening on port 3000");
 });
