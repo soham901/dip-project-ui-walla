@@ -25,15 +25,17 @@ import { connectDB } from "./db/index.js";
 
 connectDB();
 
-const Comp = mongoose.model("Comp", mongoose.Schema({
-    title: {
-        type: String,
-        required: true,
-    },
-    code: {
-        type: String,
-    },
-}));
+import { Comp } from "./models.js";
+
+// const Comp = mongoose.model("Comp", mongoose.Schema({
+//     title: {
+//         type: String,
+//         required: true,
+//     },
+//     code: {
+//         type: String,
+//     },
+// }));
 
 // import componentRouter from "./routes/component.js";
 
@@ -42,28 +44,29 @@ const Comp = mongoose.model("Comp", mongoose.Schema({
 app.post("/component", (req, res) => {
     console.log(req.body);
     const { html, css, js, title } = req.body;
-    const code = `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${title}</title>
-        <style>${css}</style>
-    </head>
-    <body>
-        ${html}
+    const category = req?.body?.category || "general";
+    // const code = `
+    // <!DOCTYPE html>
+    // <html lang="en">
+    // <head>
+    //     <meta charset="UTF-8">
+    //     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    //     <title>${title}</title>
+    //     <style>${css}</style>
+    // </head>
+    // <body>
+    //     ${html}
 
-        <script>
-            ${js}
-        </script>
-    </body>
-    </html>
-    `;
+    //     <script>
+    //         ${js}
+    //     </script>
+    // </body>
+    // </html>
+    // `;
 
-    Comp.create({ title: title, code: code }).then((data) => {
+    Comp.create({ title: title, html: html, css: css, js: js, category: category }).then((data) => {
         console.log(data);
-        res.send(data);
+        res.send("DONE");
     })
 });
 
@@ -75,7 +78,25 @@ app.get("/component", (req, res) => {
     if (id) {
         if (preview) {
             Comp.findById(id).then((data) => {
-                res.send(data.code);
+                const code = `
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>${data.title}</title>
+                    <style>${data.css}</style>
+                </head>
+                <body>
+                    ${data.html}
+
+                    <script>
+                        ${data.js}
+                    </script>
+                </body>
+                </html>
+                `;
+                res.send(code)
             })
         }
         else {
@@ -92,7 +113,7 @@ app.get("/component", (req, res) => {
     }
 });
 
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
     const html = `<!DOCTYPE html>
     <html lang="en">
       <head>
@@ -119,7 +140,8 @@ app.get("/", (req, res) => {
       </body>
     </html>
     `
-    res.send(html);
+    // res.send(html);
+    res.sendFile(__dirname + "/index.html")
 });
 
 app.listen(3000, () => {
