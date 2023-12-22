@@ -6,6 +6,28 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>WORKS</h1>
+    <input type="text" id="title">
+    <input type="text" id="category">
+    <input type="text" id="html">
+    <input type="text" id="css">
+    <input type="text" id="js">
+    <button onclick="sub()">Submit</button>
+
+    <script>
+      async function sub() {
+        const res = await fetch('/component', {
+          method: 'POST',
+          body: JSON.stringify({
+            title: document.getElementById('title').value,
+            category: document.getElementById('category').value,
+            html: document.getElementById('html').value,
+            css: document.getElementById('css').value,
+            js: document.getElementById('js').value,
+          })
+        })
+        // console.log(await res.json());
+        console.log(document.getElementById('title').value);
+      }
+    </script>
   </body>
 </html>
