@@ -1,38 +1,8 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "./main.js",
-      "use": "@vercel/node"
-    }
-  ],
-
-  "routes": [
-    {
-      "handle": "rescript"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "main.js"
-    }
-  ],
   "rewrites": [
     {
-      "source": "/public/(.*)",
-      "destination": "/public/$1"
-    }
-  ],
-  "headers": [
-    {
       "source": "/(.*)",
-      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
+      "destination": "/"
     }
-  ],
-
-  "git": {
-    "deploymentEnabled": {
-      "main": true,
-      "dev": true
-    }
-  }
+  ]
 }

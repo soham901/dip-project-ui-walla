@@ -30,7 +30,7 @@ app.use(bodyParser.text())
 
 
 app.get("/", (req, res) => {
-    res.send("Hello World");
+    res.sendFile('index.html', { root: path.join(__dirname, 'public') });
 });
 
 
