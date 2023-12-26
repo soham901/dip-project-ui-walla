@@ -13,7 +13,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "server.js"
+      "dest": "main.js"
     }
   ],
   "rewrites": [
