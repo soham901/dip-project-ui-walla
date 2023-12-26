@@ -6,20 +6,15 @@
       "use": "@vercel/node"
     }
   ],
-  "routes": [
+  "rewrites": [{ "source": "/(.*)", "destination": "main.js" }],
+  "headers": [
     {
-      "src": "/(.*)",
-      "dest": "main.js",
-      "methods": ["GET", "POST", "PUT", "DELETE"],
-      "headers": {
-        "Access-Control-Allow-Origin": "*"
-      }
+      "source": "/(.*)",
+      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
+    },
+    {
+      "source": "/vercel_app_domain_name/(.*)",
+      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
     }
-  ],
-  "git": {
-    "deploymentEnabled": {
-      "main": true,
-      "dev": false
-    }
-  }
+  ]
 }
