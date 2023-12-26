@@ -42,8 +42,8 @@ app.post("/", (req, res) => {
 
 
 app.get("/component", (req, res) => {
-    const id = req.query.id;
-    const preview = req.query.preview;
+    const id = req.query?.id;
+    const preview = req.query?.preview;
 
     if (id) {
         if (preview == "true") {
