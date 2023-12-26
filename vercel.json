@@ -7,10 +7,9 @@
     }
   ],
   "rewrites": [
-    { "source": "/(.*)", "destination": "main.js" },
+    { "source": "/api(.*)", "destination": "main.js" },
     { "source": "/(.*)", "destination": "public/$1" }
   ],
-
   "headers": [
     {
       "source": "/(.*)",
