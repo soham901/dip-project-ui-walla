@@ -6,9 +6,9 @@
       "use": "@vercel/node"
     }
   ],
-  "routes": [
-    { "src": "/(.+)", "dest": "/main.js" },
-    { "src": "/", "dest": "/public/index.html" }
+  "rewrites": [
+    { "source": "/", "destination": "public/index.html" },
+    { "source": "/api(.+)", "destination": "main.js" }
   ],
   "headers": [
     {
@@ -21,7 +21,7 @@
     }
   ],
   "git": {
-    "deployments": {
+    "deploymentEnabled": {
       "main": true,
       "dev": false
     }
