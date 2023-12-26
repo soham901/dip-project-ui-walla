@@ -2,11 +2,11 @@
   "version": 2,
   "builds": [
     {
-      "src": "./index.js",
+      "src": "./main.js",
       "use": "@vercel/node"
     }
   ],
-  "rewrites": [{ "source": "/(.*)", "destination": "index.js" }],
+  "rewrites": [{ "source": "/(.*)", "destination": "main.js" }],
   "headers": [
     {
       "source": "/(.*)",
