@@ -16,21 +16,6 @@
       "dest": "server.js"
     }
   ],
-  "public": {
-    "includeFiles": [
-      "**/*.html",
-      "**/*.css",
-      "**/*.js",
-      "**/*.png",
-      "**/*.jpg",
-      "**/*.jpeg",
-      "**/*.gif",
-      "**/*.svg",
-      "**/*.ico",
-      "**/*.json"
-    ],
-    "excludeFiles": ["node_modules/**/*"]
-  },
   "rewrites": [
     {
       "source": "/public/(.*)",
