@@ -29,9 +29,9 @@ app.use(cookieParser())
 app.use(bodyParser.text())
 
 
-app.get("/", (req, res) => {
-    res.send("Hello World");
-});
+// app.get("/", (req, res) => {
+//     res.send("Hello World");
+// });
 
 
 app.post("/", (req, res) => {
