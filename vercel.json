@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/",
-      "dest": "test.html"
+      "dest": "main.js"
     }
   ],
   "git": {

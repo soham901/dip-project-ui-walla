@@ -30,7 +30,8 @@ app.use(bodyParser.text())
 
 
 app.get("/", (req, res) => {
-    res.send("Hello World");
+    // res.send("Hello World");
+    res.sendFile("test.html");
 });
 
 
