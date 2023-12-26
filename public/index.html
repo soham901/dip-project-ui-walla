@@ -3,31 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title></title>
   </head>
   <body>
-    <input type="text" id="title">
-    <input type="text" id="category">
-    <input type="text" id="html">
-    <input type="text" id="css">
-    <input type="text" id="js">
+    <h1>Components</h1>
+
+    <div class="components"></div>
+
+    <hr />
+
+    <h1>Add Component</h1>
+
+    <input type="text" id="title" />
+    <input type="text" id="category" />
+    <input type="text" id="html" />
+    <input type="text" id="css" />
+    <input type="text" id="js" />
 
     <button onclick="sub()">Submit</button>
 
     <script>
+      get();
+
+      async function get() {
+        const res = await fetch("/component");
+        if (res.status === 200) {
+          for (const i of await res.json()) {
+            console.log(i);
+            const div = document.createElement("div");
+            const b = document.createElement("b");
+            const h1 = document.createElement("h1");
+            const view = document.createElement("a");
+            const download = document.createElement("a");
+            const embed = document.createElement("embed");
+
+            view.innerHTML = "View";
+            view.href = "/component?id=" + i._id + "&preview=true";
+            view.target = "_blank";
+
+            download.innerHTML = "Download";
+            download.href = "/component?id=" + i._id + "&preview=false";
+            download.target = "_blank";
+
+            embed.src = "/component?id=" + i._id + "&preview=true";
+
+            div.style =
+              "border: 1px solid black; padding: 10px; margin: 10px; border-radius: 10px;";
+            h1.innerHTML = i.title;
+            b.innerHTML = i.category;
+
+            div.appendChild(h1);
+            div.appendChild(b);
+            div.appendChild(document.createElement("br"));
+            div.appendChild(embed);
+            div.appendChild(download);
+            div.appendChild(document.createElement("br"));
+            div.appendChild(view);
+
+            document.querySelector(".components").appendChild(div);
+          }
+        } else {
+          alert("error");
+        }
+      }
+
       async function sub() {
-        const res = await fetch('/component', {
-          method: 'POST',
+        const res = await fetch("/component", {
+          method: "POST",
           body: JSON.stringify({
-            title: document.getElementById('title').value,
-            category: document.getElementById('category').value,
-            html: document.getElementById('html').value,
-            css: document.getElementById('css').value,
-            js: document.getElementById('js').value,
-          })
-        })
-        // console.log(await res.json());
-        console.log(document.getElementById('title').value);
+            title: document.getElementById("title").value,
+            category: document.getElementById("category").value,
+            html: document.getElementById("html").value,
+            css: document.getElementById("css").value,
+            js: document.getElementById("js").value,
+          }),
+        });
+        if (res.status === 200) {
+          console.log(await res.json());
+          alert("success");
+        } else {
+          alert("error");
+        }
       }
     </script>
   </body>
