@@ -31,7 +31,8 @@ app.use(bodyParser.text())
 
 app.get("/", (req, res) => {
     // res.send("Hello World");
-    res.sendFile("test.html", { root: __dirname });
+    res.sendFile("./test.html")
+    // res.sendFile("test.html", { root: __dirname });
 });
 
 
