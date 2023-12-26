@@ -6,7 +6,21 @@
       "use": "@vercel/node"
     }
   ],
-  "rewrites": [{ "source": "/", "destination": "public/index.html" }],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "index.js"
+    },
+    {
+      "src": "/",
+      "dest": "public/index.html"
+    },
+    {
+      "src": "/(.+)",
+      "dest": "public/$1"
+    }
+  ],
+
   "headers": [
     {
       "source": "/(.*)",
