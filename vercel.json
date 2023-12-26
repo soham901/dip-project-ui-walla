@@ -6,7 +6,7 @@
       "use": "@vercel/node"
     }
   ],
-  "rewrites": [{ "source": "/", "destination": "./public/index.html" }],
+  "rewrites": [{ "source": "/", "destination": "public/index.html" }],
   "headers": [
     {
       "source": "/(.*)",
