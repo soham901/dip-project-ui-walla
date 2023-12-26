@@ -6,23 +6,6 @@
     <title>Document</title>
   </head>
   <body>
-    <script>
-      const url = "https://ui-comp.vercel.app";
-      //   const url = "http://localhost:3000";
-
-      const post = async () => {
-        const response = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ name: "John" }),
-        });
-        const data = await response.json();
-        console.log(data);
-      };
-
-      post();
-    </script>
+    <h1>Hello</h1>
   </body>
 </html>
