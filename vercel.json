@@ -6,16 +6,44 @@
       "use": "@vercel/node"
     }
   ],
+
   "routes": [
     {
+      "handle": "rescript"
+    },
+    {
       "src": "/(.*)",
-      "dest": "main.js",
-      "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-      "headers": {
-        "Access-Control-Allow-Origin": "*"
-      }
+      "dest": "server.js"
     }
   ],
+  "public": {
+    "includeFiles": [
+      "**/*.html",
+      "**/*.css",
+      "**/*.js",
+      "**/*.png",
+      "**/*.jpg",
+      "**/*.jpeg",
+      "**/*.gif",
+      "**/*.svg",
+      "**/*.ico",
+      "**/*.json"
+    ],
+    "excludeFiles": ["node_modules/**/*"]
+  },
+  "rewrites": [
+    {
+      "source": "/public/(.*)",
+      "destination": "/public/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [{ "key": "Access-Control-Allow-Origin", "value": "*" }]
+    }
+  ],
+
   "git": {
     "deploymentEnabled": {
       "main": true,
