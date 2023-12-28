@@ -1,14 +1,8 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      "dest": "/index.js"
-    },
-    {
-      "src": "/(+*)",
-      "methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      "dest": "/index.js"
+      "source": "/(.*)",
+      "destination": "/"
     }
   ]
 }
