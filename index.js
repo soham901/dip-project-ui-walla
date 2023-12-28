@@ -95,7 +95,12 @@ app.get("/component", (req, res) => {
                 </body>
                 </html>
                 `;
-                res.setHeader('Content-disposition', 'attachment; filename=component.html');
+
+                let filename = data.title.replace(/ /g, "_");
+
+                filename += " - UI Walla"
+
+                res.setHeader('Content-disposition', 'attachment; filename=' + filename + '.html');
                 res.setHeader('Content-type', 'text/html');
                 res.charset = 'UTF-8';
                 res.write(code);
