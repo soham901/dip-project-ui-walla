@@ -35,6 +35,7 @@
             const h1 = document.createElement("h1");
             const view = document.createElement("a");
             const download = document.createElement("a");
+            const remove = document.createElement("button");
             const embed = document.createElement("embed");
 
             view.innerHTML = "View";
@@ -44,6 +45,18 @@
             download.innerHTML = "Download";
             download.href = "/component?id=" + i._id + "&preview=false";
             download.target = "_blank";
+
+            remove.innerHTML = "Remove";
+            remove.onclick = async () => {
+              const res = await fetch("/component?id=" + i._id, {
+                method: "DELETE",
+              });
+              if (res.status === 200) {
+                location.reload();
+              } else {
+                alert("error");
+              }
+            };
 
             embed.src = "/component?id=" + i._id + "&preview=true";
 
@@ -57,6 +70,8 @@
             div.appendChild(document.createElement("br"));
             div.appendChild(embed);
             div.appendChild(download);
+            div.appendChild(document.createElement("br"));
+            div.appendChild(remove);
             div.appendChild(document.createElement("br"));
             div.appendChild(view);
 

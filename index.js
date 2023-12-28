@@ -51,7 +51,6 @@ app.get("/component", (req, res) => {
 
     if (id) {
         if (preview == "true") {
-            console.log("preview");
             Comp.findById(id).then((data) => {
                 const code = `
                 <!DOCTYPE html>
@@ -130,6 +129,15 @@ app.post("/component", (req, res) => {
     Comp.create({ title: title, html: html, css: css, js: js, category: category }).then((data) => {
         console.log(data);
         res.json({ message: "Component Saved" })
+    })
+});
+
+
+app.delete("/component", (req, res) => {
+    console.log(req.body);
+    const id = req.query?.id;
+    Comp.findByIdAndDelete(id).then((data) => {
+        res.json({ message: "Component Deleted" })
     })
 });
 
