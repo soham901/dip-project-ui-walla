@@ -6,21 +6,15 @@
     <title></title>
   </head>
   <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/add">Add Component</a>
+      <a href="/users">Users</a>
+    </nav>
+
     <h1>Components</h1>
 
     <div class="components"></div>
-
-    <hr />
-
-    <h1>Add Component</h1>
-
-    <input type="text" id="title" />
-    <input type="text" id="category" />
-    <input type="text" id="html" />
-    <input type="text" id="css" />
-    <input type="text" id="js" />
-
-    <button onclick="sub()">Submit</button>
 
     <script>
       get();
@@ -29,29 +23,37 @@
         const res = await fetch("/component");
         if (res.status === 200) {
           for (const i of await res.json()) {
-            console.log(i);
             const div = document.createElement("div");
             const b = document.createElement("b");
             const h1 = document.createElement("h1");
-            const view = document.createElement("a");
-            const download = document.createElement("a");
+            const view = document.createElement("button");
+            const download = document.createElement("button");
             const remove = document.createElement("button");
             const embed = document.createElement("embed");
 
             view.innerHTML = "View";
-            view.href = "/component?id=" + i._id + "&preview=true";
-            view.target = "_blank";
+            view.onclick = () => {
+              window.open("/component?id=" + i._id + "&preview=true");
+            };
 
             download.innerHTML = "Download";
-            download.href = "/component?id=" + i._id + "&preview=false";
-            download.target = "_blank";
+            download.onclick = () => {
+              window.open("/component?id=" + i._id + "&preview=false");
+            };
 
             remove.innerHTML = "Remove";
             remove.onclick = async () => {
-              const res = await fetch("/component?id=" + i._id, {
+              const res = await fetch("/component", {
                 method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  id: i._id,
+                }),
               });
               if (res.status === 200) {
+                alert("success");
                 location.reload();
               } else {
                 alert("error");
@@ -63,43 +65,20 @@
             div.style =
               "border: 1px solid black; padding: 10px; margin: 10px; border-radius: 10px;";
             h1.innerHTML = i.title;
-            b.innerHTML = i.category;
+            b.innerHTML = "category: " + i.category;
 
             div.appendChild(h1);
             div.appendChild(b);
             div.appendChild(document.createElement("br"));
             div.appendChild(embed);
-            div.appendChild(download);
-            div.appendChild(document.createElement("br"));
-            div.appendChild(remove);
-            div.appendChild(document.createElement("br"));
             div.appendChild(view);
+            div.appendChild(download);
+            div.appendChild(remove);
 
             document.querySelector(".components").appendChild(div);
           }
         } else {
           alert("error");
-        }
-      }
-
-      async function sub() {
-        const res = await fetch("/component", {
-          method: "POST",
-          body: JSON.stringify({
-            title: document.getElementById("title").value,
-            category: document.getElementById("category").value,
-            html: document.getElementById("html").value,
-            css: document.getElementById("css").value,
-            js: document.getElementById("js").value,
-          }),
-        });
-        if (res.status === 200) {
-          console.log(await res.json());
-          alert("success");
-          console.log(await res.json());
-        } else {
-          alert("error");
-          console.log(await res.json());
         }
       }
     </script>

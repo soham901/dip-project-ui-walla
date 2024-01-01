@@ -1,26 +1,27 @@
 {
-  "name": "starter-express-api",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "",
+  "description": "backend of ui componenent library",
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "dev": "node --watch index.js",
     "start": "node index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cyclic-software/starter-express-api.git"
-  },
-  "author": "",
+  "keywords": [
+    "ui-components",
+    "ui-lib"
+  ],
+  "author": "Soham",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/cyclic-software/starter-express-api/issues"
-  },
-  "homepage": "https://github.com/cyclic-software/starter-express-api#readme",
   "dependencies": {
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "mongoose": "^8.0.3"
+    "jsonwebtoken": "^9.0.2",
+    "monaco-editor": "^0.45.0",
+    "mongoose": "^8.0.3",
+    "tailwindcss": "^3.4.0"
   }
 }
