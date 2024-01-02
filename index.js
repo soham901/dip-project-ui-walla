@@ -1,10 +1,11 @@
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
-// import cookieParser from "cookie-parser"
+import jwt from 'jsonwebtoken';
 import dotenv from "dotenv"
+import bodyParser from "body-parser";
 
-dotenv.config({ path: '.env' });
+// dotenv.config({ path: '.env' });
+dotenv.config({ path: './.env' });
 
 import { connectDB } from "./db.js";
 
@@ -17,20 +18,16 @@ const app = express();
 app.use(cors(
     {
         origin: "*",
-        credentials: true,
-        optionsSuccessStatus: 200,
-        methods: "GET, POST, PUT, DELETE",
-        allowedHeaders: "Content-Type, Authorization, Origin, X-Requested-With, Accept"
+        credentials: true
     }
 ));
 
 
 app.use(express.json())
-app.use(express.urlencoded())
+app.use(express.urlencoded({ extended: true }))
 app.use(express.static("public"))
-// app.use(cookieParser())
-app.use(bodyParser.text())
-app.options('*', cors())
+// app.use(bodyParser.text())
+app.use(bodyParser.json())
 
 
 app.get("/", (req, res) => {
@@ -45,12 +42,42 @@ app.post("/", (req, res) => {
 });
 
 
+app.post("/generateToken", (req, res) => {
+    let jwtSecretKey = process.env.JWT_SECRET_KEY;
+    let data = {
+        time: Date(),
+        userId: 12,
+    }
+    // expires in 5 minutes
+    const token = jwt.sign(data, jwtSecretKey, { expiresIn: "5m" });
+    res.json({ token: token });
+});
+
+
+app.get("/validateToken", (req, res) => {
+    let jwtSecretKey = process.env.JWT_SECRET_KEY;
+    try {
+        const token = req.header("Authorization");
+
+        const verified = jwt.verify(token, jwtSecretKey);
+        if (verified) {
+            return res.send("Successfully Verified");
+        } else {
+            return res.status(401).send(error);
+        }
+    } catch (error) {
+        return res.status(401).send(error);
+    }
+});
+
+
 app.get("/component", (req, res) => {
     const id = req.query?.id;
     const preview = req.query?.preview;
 
     if (id) {
         if (preview == "true") {
+            console.log("preview");
             Comp.findById(id).then((data) => {
                 const code = `
                 <!DOCTYPE html>
@@ -94,12 +121,7 @@ app.get("/component", (req, res) => {
                 </body>
                 </html>
                 `;
-
-                let filename = data.title.replace(/ /g, "_");
-
-                filename += " - UI Walla"
-
-                res.setHeader('Content-disposition', 'attachment; filename=' + filename + '.html');
+                res.setHeader('Content-disposition', 'attachment; filename=component.html');
                 res.setHeader('Content-type', 'text/html');
                 res.charset = 'UTF-8';
                 res.write(code);
@@ -122,9 +144,8 @@ app.get("/component", (req, res) => {
 
 
 app.post("/component", (req, res) => {
-    const body = typeof req.body == "string" ? JSON.parse(req.body) : req.body;
-    const { html, css, js, title } = body;
-    const category = body?.category || "general";
+    const { html, css, js, title } = req.body;
+    const category = req.body?.category || "general";
 
     Comp.create({ title: title, html: html, css: css, js: js, category: category }).then((data) => {
         console.log(data);
@@ -134,14 +155,13 @@ app.post("/component", (req, res) => {
 
 
 app.delete("/component", (req, res) => {
-    console.log(req.body);
-    const id = req.query?.id;
+    const { id } = req.body;
     Comp.findByIdAndDelete(id).then((data) => {
         res.json({ message: "Component Deleted" })
     })
 });
 
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(3000, () => {
     console.log("Server is running");
 });
