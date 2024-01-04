@@ -15,28 +15,10 @@ import { Comp } from "./models.js";
 
 const app = express();
 
-// app.use(cors(
-//     {
-//         origin: "*",
-//         credentials: true
-//     }
-// ));
-
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*")
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested, Content-Type, Accept Authorization"
-    )
-    if (req.method === "OPTIONS") {
-        res.header(
-            "Access-Control-Allow-Methods",
-            "POST, PUT, PATCH, GET, DELETE"
-        )
-        return res.status(200).json({})
-    }
-    next()
-})
+app.use(cors({
+    origin: "*",
+    credentials: true
+}));
 
 
 app.use(express.json())
@@ -59,7 +41,7 @@ app.post("/", (req, res) => {
 
 
 app.post("/generateToken", (req, res) => {
-    let jwtSecretKey = process.env.JWT_SECRET_KEY;
+    let jwtSecretKey = process.env.SECRET;
     let data = {
         time: Date(),
         userId: 12,
@@ -71,7 +53,7 @@ app.post("/generateToken", (req, res) => {
 
 
 app.get("/validateToken", (req, res) => {
-    let jwtSecretKey = process.env.JWT_SECRET_KEY;
+    let jwtSecretKey = process.env.SECRET;
     try {
         const token = req.header("Authorization");
 
