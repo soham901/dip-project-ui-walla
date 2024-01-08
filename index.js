@@ -11,7 +11,7 @@ import { connectDB } from "./db.js";
 
 connectDB();
 
-import { Comp } from "./models.js";
+import { Comp, User } from "./models.js";
 
 const app = express();
 
@@ -33,38 +33,71 @@ app.get("/", (req, res) => {
 });
 
 
-app.post("/", (req, res) => {
-    console.log(req.body);
-    const { name } = req.body;
-    res.json({ message: `Hello ${name}` })
-});
 
-
-app.post("/generateToken", (req, res) => {
-    let jwtSecretKey = process.env.SECRET;
-    let data = {
-        time: Date(),
-        userId: 12,
+app.get("/user", (req, res) => {
+    const email = req.query?.email;
+    if (email) {
+        User.findOne({ email: email }).then((data) => {
+            res.send(data);
+        })
     }
-    // expires in 5 minutes
-    const token = jwt.sign(data, jwtSecretKey, { expiresIn: "5m" });
-    res.json({ token: token });
+    else {
+        User.find().then((data) => {
+            res.send(data);
+        })
+    }
 });
 
 
-app.get("/validateToken", (req, res) => {
-    let jwtSecretKey = process.env.SECRET;
-    try {
-        const token = req.header("Authorization");
+app.post("/signup", (req, res) => {
+    const { name, email, password } = req.body;
 
-        const verified = jwt.verify(token, jwtSecretKey);
-        if (verified) {
-            return res.send("Successfully Verified");
-        } else {
-            return res.status(401).send(error);
+    if (User.findOne({ email: email.toString().toLowerCase() }).then((data) => {
+        if (data) {
+            return res.status(401).json({ message: "User Already Exists" });
         }
-    } catch (error) {
-        return res.status(401).send(error);
+
+        User.create({ name: name, email: email.toString().toLowerCase(), password: password }).then((data) => {
+            return res.json({ message: "User Created" });
+        })
+    }));
+});
+
+
+app.post("/login", (req, res) => {
+    const { email, password } = req.body;
+
+    User.findOne({ email: email }).then((data) => {
+        if (!data) {
+            return res.status(401).send("Invalid Credentials");
+        }
+        if (data.password != password) {
+            return res.status(401).send("Invalid Credentials");
+        }
+
+        const token = jwt.sign(data.email, "SECRET");
+        res.json({ token: token });
+    })
+});
+
+
+app.get("/validate", (req, res) => {
+    const token = req.query.token;
+
+    if (token) {
+        try {
+            const verified = jwt.verify(token, "SECRET")
+            if (verified) {
+                return res.send("Successfully Verified");
+            } else {
+                return res.status(401).send("Invalid Token");
+            }
+        } catch (error) {
+            return res.status(401).send("Invalid Token");
+        }
+    }
+    else {
+        return res.status(401).send("Invalid Token");
     }
 });
 

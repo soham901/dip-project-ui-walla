@@ -8,8 +8,8 @@
   <body>
     <nav>
       <a href="/">Home</a>
-      <a href="/add">Add Component</a>
-      <a href="/users">Users</a>
+      <a href="/add.html">Add Component</a>
+      <a href="/user.html">Users</a>
     </nav>
 
     <h1>Add Component</h1>
@@ -23,6 +23,20 @@
     <button onclick="sub()">Submit</button>
 
     <script>
+      if (!localStorage.getItem("token")) {
+        alert("You are not logged in");
+      }
+
+      if (
+        fetch("/validate?token=" + localStorage.getItem("token")).then(
+          (res) => {
+            if (res.status != 200) {
+              window.location.href = "/login.html";
+            }
+          }
+        )
+      );
+
       async function sub() {
         const res = await fetch("/component", {
           method: "POST",
