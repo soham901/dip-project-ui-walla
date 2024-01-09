@@ -28,3 +28,12 @@ export const Comp = mongoose.model("Comp", mongoose.Schema({
         }
     ],
 }));
+
+
+
+
+export const User = mongoose.model("User", mongoose.Schema({
+    name: String,
+    email: String,
+    password: String,
+}));

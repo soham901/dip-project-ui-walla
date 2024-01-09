@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/add.html">Add Component</a>
+      <a href="/user.html">Users</a>
+    </nav>
+
+    <nav>
+      <a href="/signup.html">Signup</a>
+      <a href="/login.html">Login</a>
+    </nav>
+
+    <h1>Users</h1>
+    <div id="users"></div>
+
+    <script>
+      if (!localStorage.getItem("token")) {
+        alert("You are not logged in");
+      }
+
+      if (
+        fetch("/validate?token=" + localStorage.getItem("token")).then(
+          (res) => {
+            if (res.status != 200) {
+              alert("You are not logged in");
+              window.location.href = "/login.html";
+            }
+
+            fetch("/user")
+              .then((res) => res.json())
+              .then((data) => {
+                data.forEach((user) => {
+                  const userDiv = document.createElement("div");
+                  userDiv.innerHTML = `
+              <div style="border: 1px solid black; padding: 10px; margin: 10px;">
+                <h3>${user.name}</h3>
+                <p>${user.email}</p>
+              </div>
+            `;
+                  document.getElementById("users").appendChild(userDiv);
+                });
+              });
+          }
+        )
+      );
+    </script>
+  </body>
+</html>
