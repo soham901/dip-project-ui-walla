@@ -29,6 +29,60 @@ app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
 
+
+const userAuth = (req, res, next) => {
+
+    console.log("userAuth");
+
+    const token = req.headers?.authorization?.split(" ")[1];
+    if (token) {
+        try {
+            const verified = jwt.verify(token, "SECRET")
+            if (verified) {
+                next();
+            } else {
+                return res.status(401).send("Invalid Token");
+            }
+        } catch (error) {
+            return res.status(401).send("Invalid Token");
+        }
+    }
+    else {
+        return res.status(401).send("Invalid Token");
+    }
+}
+
+
+const adminAuth = (req, res, next) => {
+
+    console.log("adminAuth");
+
+    const token = req.headers?.authorization?.split(" ")[1];
+    if (token) {
+        try {
+            const verified = jwt.verify(token, "SECRET")
+            if (verified) {
+                User.findOne({ email: verified }).then((data) => {
+                    if (data.isAdmin) {
+                        next();
+                    }
+                    else {
+                        return res.status(401).send("Invalid Token");
+                    }
+                })
+            } else {
+                return res.status(401).send("Invalid Token");
+            }
+        } catch (error) {
+            return res.status(401).send("Invalid Token");
+        }
+    }
+    else {
+        return res.status(401).send("Invalid Token");
+    }
+}
+
+
 app.get("/", (req, res) => {
     res.json({ message: "Hello from server" })
     //res.sendFile('index.html', { root: path.join(__dirname, 'public') });
@@ -36,7 +90,7 @@ app.get("/", (req, res) => {
 
 
 
-app.get("/user", (req, res) => {
+app.get("/users", (req, res) => {
     const email = req.query?.email;
     if (email) {
         User.findOne({ email: email }).then((data) => {
@@ -68,8 +122,6 @@ app.post("/signup", (req, res) => {
 
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
-
-    console.log(req.body);
 
     User.findOne({ email: email }).then((data) => {
         if (!data) {
@@ -106,7 +158,7 @@ app.get("/validate", (req, res) => {
 });
 
 
-app.get("/component", (req, res) => {
+app.get("/component", userAuth, (req, res) => {
     const id = req.query?.id;
     const preview = req.query?.preview;
 
@@ -178,7 +230,7 @@ app.get("/component", (req, res) => {
 });
 
 
-app.post("/component", (req, res) => {
+app.post("/component", adminAuth, (req, res) => {
     const { html, css, js, title } = req.body;
     const category = req.body?.category || "general";
 
@@ -189,10 +241,13 @@ app.post("/component", (req, res) => {
 });
 
 
-app.delete("/component", (req, res) => {
+app.delete("/component", adminAuth, (req, res) => {
     const { id } = req.body;
     Comp.findByIdAndDelete(id).then((data) => {
-        res.json({ message: "Component Deleted" })
+        if (!data) {
+            return res.status(401).json({ message: "Component Not Found" });
+        }
+        return res.json({ message: "Component Deleted" })
     })
 });
 
