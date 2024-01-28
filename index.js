@@ -94,8 +94,8 @@ app.get("/users", userAuth, async (req, res) => {
 
     const token = req.headers?.authorization?.split(" ")[1];
 
-    if (!token || !email) {
-        return res.status(401).send("Invalid Token");
+    if (!token) {
+        return res.status(401).json({ message: "Invalid Token" });
     }
 
     if (!email) {
@@ -105,20 +105,27 @@ app.get("/users", userAuth, async (req, res) => {
     if (email) {
         const user = await User.findOne({ email: email });
 
-        console.log(user);
+        user.password = undefined;
 
         const likedComponents = await Comp.find({
             likes: {
                 $in: [user._id]
             }
-        });
+        })
 
         console.log(likedComponents);
 
-        res.send(likedComponents);
+        res.send({
+            user: user,
+            likedComponents: likedComponents
+        });
     }
     else {
         const data = await User.find();
+        // hide password
+        data.forEach((user) => {
+            user.password = undefined;
+        })
         return res.json(data);
     }
 });
@@ -284,12 +291,45 @@ app.get("/like", userAuth, async (req, res) => {
 
     console.log(component);
 
-    component.likes.push(user._id);
+    if (component && component.likes.includes(user._id)) {
+        return res.status(401).json({ message: "Already Liked" });
+    }
+    else {
+        component.likes.push(user._id);
+    }
 
     await component.save()
 
-    res.send("ok");
+    res.json({ message: "Liked Successfully" });
 });
+
+
+app.get("/unlike", userAuth, async (req, res) => {
+    const { id } = req.query;
+    const token = req.headers?.authorization?.split(" ")[1];
+    const email = jwt.verify(token, "SECRET");
+
+    const user = await User.findOne({ email: email });
+
+    console.log(user);
+
+    const component = await Comp.findById(id);
+
+    console.log(component);
+
+    if (component && component.likes && component.likes.includes(user._id)) {
+        component.likes.pop(user._id);
+    }
+    else {
+        return res.status(401).json({ message: "Not Liked" });
+    }
+
+    await component.save()
+
+    res.json({ message: "Unliked Successfully" });
+});
+
+
 
 
 app.listen(3000, () => {
