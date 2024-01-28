@@ -180,7 +180,6 @@ app.get("/validate", (req, res) => {
 app.get("/component", userAuth, (req, res) => {
     const id = req.query?.id;
     const preview = req.query?.preview;
-    cons
 
     if (id) {
         if (preview == "true") {
