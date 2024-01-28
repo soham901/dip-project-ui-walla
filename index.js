@@ -17,19 +17,21 @@ const app = express();
 
 app.use(cors({
     origin: "*",
-    credentials: true
+    credentials: true,
+    methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
 }));
 
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(express.static("public"))
+//app.use(express.static("public"))
 // app.use(bodyParser.text())
 app.use(bodyParser.json())
 
 
 app.get("/", (req, res) => {
-    res.sendFile('index.html', { root: path.join(__dirname, 'public') });
+    res.json({ message: "Hello from server" })
+    //res.sendFile('index.html', { root: path.join(__dirname, 'public') });
 });
 
 
@@ -66,6 +68,8 @@ app.post("/signup", (req, res) => {
 
 app.post("/login", (req, res) => {
     const { email, password } = req.body;
+
+    console.log(req.body);
 
     User.findOne({ email: email }).then((data) => {
         if (!data) {
