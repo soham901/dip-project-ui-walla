@@ -89,7 +89,6 @@ app.get("/", (req, res) => {
 });
 
 
-
 app.get("/users", (req, res) => {
     const email = req.query?.email;
     if (email) {
@@ -125,10 +124,10 @@ app.post("/login", (req, res) => {
 
     User.findOne({ email: email }).then((data) => {
         if (!data) {
-            return res.status(401).send("Invalid Credentials");
+            return res.status(401).json({ message: "Invalid Credentials" });
         }
         if (data.password != password) {
-            return res.status(401).send("Invalid Credentials");
+            return res.status(401).json({ message: "Invalid Credentials" });
         }
 
         const token = jwt.sign(data.email, "SECRET");
