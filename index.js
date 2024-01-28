@@ -89,17 +89,37 @@ app.get("/", (req, res) => {
 });
 
 
-app.get("/users", (req, res) => {
-    const email = req.query?.email;
+app.get("/users", userAuth, async (req, res) => {
+    let email = req.query?.email;
+
+    const token = req.headers?.authorization?.split(" ")[1];
+
+    if (!token || !email) {
+        return res.status(401).send("Invalid Token");
+    }
+
+    if (!email) {
+        email = jwt.verify(token, "SECRET");
+    }
+
     if (email) {
-        User.findOne({ email: email }).then((data) => {
-            res.send(data);
-        })
+        const user = await User.findOne({ email: email });
+
+        console.log(user);
+
+        const likedComponents = await Comp.find({
+            likes: {
+                $in: [user._id]
+            }
+        });
+
+        console.log(likedComponents);
+
+        res.send(likedComponents);
     }
     else {
-        User.find().then((data) => {
-            res.send(data);
-        })
+        const data = await User.find();
+        return res.json(data);
     }
 });
 
@@ -160,6 +180,7 @@ app.get("/validate", (req, res) => {
 app.get("/component", userAuth, (req, res) => {
     const id = req.query?.id;
     const preview = req.query?.preview;
+    cons
 
     if (id) {
         if (preview == "true") {
@@ -248,6 +269,27 @@ app.delete("/component", adminAuth, (req, res) => {
         }
         return res.json({ message: "Component Deleted" })
     })
+});
+
+
+app.get("/like", userAuth, async (req, res) => {
+    const { id } = req.query;
+    const token = req.headers?.authorization?.split(" ")[1];
+    const email = jwt.verify(token, "SECRET");
+
+    const user = await User.findOne({ email: email });
+
+    console.log(user);
+
+    const component = await Comp.findById(id);
+
+    console.log(component);
+
+    component.likes.push(user._id);
+
+    await component.save()
+
+    res.send("ok");
 });
 
 
