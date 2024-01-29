@@ -249,9 +249,20 @@ app.get("/component", (req, res) => {
     }
 
     else {
-        Comp.find().then((data) => {
-            res.send(data);
-        })
+        // Comp.find().then((data) => {
+        //     res.send(data);
+        // })
+        const category = req.query?.category;
+        if (category) {
+            Comp.find({ category }).then((data) => {
+                res.send(data);
+            })
+        }
+        else {
+            Comp.find().then((data) => {
+                res.send(data);
+            })
+        }
     }
 });
 
