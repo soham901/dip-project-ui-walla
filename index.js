@@ -83,6 +83,11 @@ const adminAuth = (req, res, next) => {
 }
 
 
+app.get("/favicon.ico", (req, res) => {
+    res.status(204);
+});
+
+
 app.get("/", (req, res) => {
     res.json({ message: "Hello from server" })
     //res.sendFile('index.html', { root: path.join(__dirname, 'public') });
