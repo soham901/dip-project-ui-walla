@@ -204,7 +204,16 @@ app.get("/component", (req, res) => {
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>${data.title}</title>
-                    <style>${data.css}</style>
+                    <style>${data.css}
+body{
+width: 100vw;
+height: 100vh;
+display:flex;
+justify-content: center;
+align-items: center;
+padding: 20%;
+}
+</style>
                 </head>
                 <body>
                     ${data.html}
