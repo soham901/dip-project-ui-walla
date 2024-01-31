@@ -2,7 +2,7 @@ FROM node:slim
 
 WORKDIR /app
 COPY . .
-RUN npm ci
+RUN npm i
 
 ARG PORT
 EXPOSE ${PORT:-3000}
