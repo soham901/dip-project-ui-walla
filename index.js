@@ -271,18 +271,36 @@ app.get("/component", (req, res) => {
     }
 
     else {
-        // Comp.find().then((data) => {
-        //     res.send(data);
-        // })
         const category = req.query?.category;
+
         if (category) {
-            Comp.find({ category }).then((data) => {
-                res.send(data);
+            const token = req.headers?.authorization?.split(" ")[1];
+            const email = jwt.verify(token, "SECRET");
+            User.findOne({ email: email }).then((user) => {
+                if (!user) return res.status(401).json({ message: "Invalid Token" });
+                Comp.find({ category: category }).then((data) => {
+                    var docForMap = JSON.parse(JSON.stringify(data));
+                    docForMap.forEach((doc) => {
+                        if (doc.likes.includes(user._id.toString())) doc.isLiked = true;
+                        else doc.isLiked = false;
+                    })
+                    res.send(docForMap);
+                })
             })
         }
         else {
-            Comp.find().then((data) => {
-                res.send(data);
+            const token = req.headers?.authorization?.split(" ")[1];
+            const email = jwt.verify(token, "SECRET");
+            User.findOne({ email: email }).then((user) => {
+                if (!user) return res.status(401).json({ message: "Invalid Token" });
+                Comp.find().then((data) => {
+                    var docForMap = JSON.parse(JSON.stringify(data));
+                    docForMap.forEach((doc) => {
+                        if (doc.likes.includes(user._id.toString())) doc.isLiked = true;
+                        else doc.isLiked = false;
+                    })
+                    res.send(docForMap);
+                })
             })
         }
     }
