@@ -197,6 +197,9 @@ app.get("/component", (req, res) => {
         if (preview == "true") {
             console.log("preview");
             Comp.findById(id).then((data) => {
+
+                console.log(data.title, data.html, data.css, data.js);
+
                 const code = `
                 <!DOCTYPE html>
                 <html lang="en">
@@ -205,14 +208,14 @@ app.get("/component", (req, res) => {
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <title>${data.title}</title>
                     <style>${data.css}
-                  body {
-                      width: 100vw;
-                      height: 100vh;
-                      display:flex;
-                      justify-content: center;
-                      align-items: center;
-                      padding: 20%;
-                  }
+                    body {
+                        width: 100vw;
+                        height: 100vh;
+                        display:flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                    </style>
                 </head>
                 <body>
                     ${data.html}
@@ -223,7 +226,7 @@ app.get("/component", (req, res) => {
                 </body>
                 </html>
                 `;
-                res.send(code)
+                res.send(code);
             })
         }
         else if (preview == "false") {
