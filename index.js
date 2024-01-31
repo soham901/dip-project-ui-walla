@@ -327,8 +327,28 @@ app.post("/component", adminAuth, (req, res) => {
 });
 
 
-// app.put("/component", adminAuth, (req, res) => {
-// });    
+app.put("/component", adminAuth, (req, res) => {
+    const { id, html, css, js, title } = req.body;
+
+    if (!id) return res.status(401).json({ message: "Please Provide Id" });
+
+    Comp.findById(id).then((data) => {
+        if (!data) {
+            return res.status(401).json({ message: "Component Not Found" });
+        }
+        try {
+            data.html = html || data.html;
+            data.css = css || data.css;
+            data.js = js || data.js;
+            data.title = title || data.title;
+            data.save();
+        } catch (error) {
+            return res.status(401).json({ message: "Invalid Data" });
+        }
+        return res.json({ message: "Component Updated" })
+    })
+
+});
 
 
 app.delete("/component", adminAuth, (req, res) => {
