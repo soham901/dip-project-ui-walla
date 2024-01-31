@@ -275,6 +275,7 @@ app.get("/component", (req, res) => {
 
         if (category) {
             const token = req.headers?.authorization?.split(" ")[1];
+            if (!token) return res.status(401).json({ message: "Invalid Token" });
             const email = jwt.verify(token, "SECRET");
             User.findOne({ email: email }).then((user) => {
                 if (!user) return res.status(401).json({ message: "Invalid Token" });
@@ -290,6 +291,11 @@ app.get("/component", (req, res) => {
         }
         else {
             const token = req.headers?.authorization?.split(" ")[1];
+            if (!token) {
+                return Comp.find().then((data) => {
+                    res.send(data);
+                })
+            }
             const email = jwt.verify(token, "SECRET");
             User.findOne({ email: email }).then((user) => {
                 if (!user) return res.status(401).json({ message: "Invalid Token" });
@@ -316,6 +322,10 @@ app.post("/component", adminAuth, (req, res) => {
         res.json({ message: "Component Saved" })
     })
 });
+
+
+// app.put("/component", adminAuth, (req, res) => {
+// });    
 
 
 app.delete("/component", adminAuth, (req, res) => {
