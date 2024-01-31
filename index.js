@@ -211,7 +211,6 @@ height: 100vh;
 display:flex;
 justify-content: center;
 align-items: center;
-padding: 20%;
 }
 </style>
                 </head>
