@@ -103,7 +103,7 @@ app.get("/users", userAuth, async (req, res) => {
         return res.status(401).json({ message: "Invalid Token" });
     }
 
-    if (!email) {
+    if (token) {
         email = jwt.verify(token, "SECRET");
     }
 
