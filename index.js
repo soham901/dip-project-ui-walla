@@ -24,8 +24,6 @@ app.use(cors({
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-//app.use(express.static("public"))
-// app.use(bodyParser.text())
 app.use(bodyParser.json())
 
 
@@ -81,11 +79,6 @@ const adminAuth = (req, res, next) => {
         return res.status(401).send("Invalid Token");
     }
 }
-
-
-app.get("/favicon.ico", (req, res) => {
-    res.status(204);
-});
 
 
 app.get("/", (req, res) => {
@@ -185,6 +178,13 @@ app.get("/validate", (req, res) => {
     else {
         return res.status(401).send("Invalid Token");
     }
+});
+
+
+app.get("/category", (req, res) => {
+    Comp.find().distinct('category').then((data) => {
+        res.send(data);
+    })
 });
 
 
