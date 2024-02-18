@@ -107,31 +107,30 @@ app.get("/users", userAuth, async (req, res) => {
         email = jwt.verify(token, "SECRET");
     }
 
-    if (email) {
-        const user = await User.findOne({ email: email });
 
-        user.password = undefined;
+    const user = await User.findOne({ email: email });
 
-        const likedComponents = await Comp.find({
-            likes: {
-                $in: [user._id]
-            }
-        })
+    user.password = undefined;
 
-        console.log(likedComponents);
+    const likedComponents = await Comp.find({
+        likes: {
+            $in: [user._id]
+        }
+    })
 
-        res.send({
-            user: user,
-            likedComponents: likedComponents
-        });
-    }
-    else {
+    if (user.isAdmin) {
         const data = await User.find();
-        // hide password
         data.forEach((user) => {
             user.password = undefined;
         })
         return res.json(data);
+    }
+
+    else {
+        res.send({
+            user: user,
+            likedComponents: likedComponents
+        });
     }
 });
 
