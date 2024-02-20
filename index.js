@@ -321,7 +321,7 @@ app.post("/component", adminAuth, (req, res) => {
 
     Comp.create({ title: title, html: html, css: css, js: js, category: category }).then((data) => {
         console.log(data);
-        res.json({ message: "Component Saved" })
+        res.json({ message: "Component Saved", id: data._id })
     })
 });
 
@@ -425,6 +425,8 @@ app.get("/search", (req, res) => {
     }).then((data) => {
         res.send(data);
     })
+
+    res.status(404).json({ message: "Not Found" });
 });
 
 
