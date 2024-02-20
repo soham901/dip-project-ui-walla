@@ -413,6 +413,14 @@ app.get("/unlike", userAuth, async (req, res) => {
 });
 
 
+app.get("/search", (req, res) => {
+    const title = req.query?.title;
+    if (!title) return res.status(401).json({ message: "Please Provide Title" });
+
+    Comp.find({ title: { $regex: title, $options: 'i' } }).then((data) => {
+        res.send(data);
+    })
+});
 
 
 app.listen(3000, () => {
