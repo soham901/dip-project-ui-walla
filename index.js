@@ -61,6 +61,9 @@ const adminAuth = (req, res, next) => {
             const verified = jwt.verify(token, "SECRET")
             if (verified) {
                 User.findOne({ email: verified }).then((data) => {
+
+                    console.log(data);
+
                     if (data.isAdmin) {
                         next();
                     }
