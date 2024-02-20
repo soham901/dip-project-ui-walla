@@ -317,7 +317,7 @@ app.get("/component", (req, res) => {
 
 app.post("/component", adminAuth, (req, res) => {
     const { html, css, js, title } = req.body;
-    const category = req.body?.category || "general";
+    const category = req.body?.category?.toLowerCase() || "general";
 
     Comp.create({ title: title, html: html, css: css, js: js, category: category }).then((data) => {
         console.log(data);
