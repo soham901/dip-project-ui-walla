@@ -12,7 +12,6 @@ export const Comp = mongoose.model("Comp", mongoose.Schema({
     },
     css: {
         type: String,
-        required: true,
     },
     js: {
         type: String,
