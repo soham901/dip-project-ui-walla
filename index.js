@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import dotenv from "dotenv"
 import bodyParser from "body-parser";
 
-// dotenv.config({ path: '.env' });
 dotenv.config({ path: './.env' });
 
 import { connectDB } from "./db.js";
