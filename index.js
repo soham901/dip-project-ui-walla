@@ -36,7 +36,14 @@ const userAuth = (req, res, next) => {
         try {
             const verified = jwt.verify(token, "SECRET")
             if (verified) {
-                next();
+                User.findOne({ email: verified }).then((data) => {
+                    if (data) {
+                        next();
+                    }
+                    else {
+                        return res.status(401).send("Invalid Token");
+                    }
+                })
             } else {
                 return res.status(401).send("Invalid Token");
             }
@@ -90,6 +97,25 @@ app.get("/", (req, res) => {
     res.json({ message: "Hello from server" })
     //res.sendFile('index.html', { root: path.join(__dirname, 'public') });
 });
+
+
+app.get("/delete-self", userAuth, (req, res) => {
+    const token = req.headers?.authorization?.split(" ")[1];
+
+    console.log(jwt.verify(token, "SECRET"));
+
+    User.findOneAndDelete({ email: jwt.verify(token, "SECRET") }).then((data) => {
+
+        if (data == null) {
+            res.status(404).json({ message: "User Not Found" });
+        }
+        else {
+            res.json({ message: "User Deleted" });
+        }
+    })
+
+
+})
 
 
 app.get("/users", userAuth, async (req, res) => {
