@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import dotenv from "dotenv"
 import bodyParser from "body-parser";
 
-// dotenv.config({ path: '.env' });
 dotenv.config({ path: './.env' });
 
 import { connectDB } from "./db.js";
@@ -37,7 +36,14 @@ const userAuth = (req, res, next) => {
         try {
             const verified = jwt.verify(token, "SECRET")
             if (verified) {
-                next();
+                User.findOne({ email: verified }).then((data) => {
+                    if (data) {
+                        next();
+                    }
+                    else {
+                        return res.status(401).send("Invalid Token");
+                    }
+                })
             } else {
                 return res.status(401).send("Invalid Token");
             }
@@ -59,8 +65,14 @@ const adminAuth = (req, res, next) => {
     if (token) {
         try {
             const verified = jwt.verify(token, "SECRET")
+
+            console.log(verified);
+
             if (verified) {
                 User.findOne({ email: verified }).then((data) => {
+
+                    console.log(data);
+
                     if (data.isAdmin) {
                         next();
                     }
@@ -85,6 +97,25 @@ app.get("/", (req, res) => {
     res.json({ message: "Hello from server" })
     //res.sendFile('index.html', { root: path.join(__dirname, 'public') });
 });
+
+
+app.get("/delete-self", userAuth, (req, res) => {
+    const token = req.headers?.authorization?.split(" ")[1];
+
+    console.log(jwt.verify(token, "SECRET"));
+
+    User.findOneAndDelete({ email: jwt.verify(token, "SECRET") }).then((data) => {
+
+        if (data == null) {
+            res.status(404).json({ message: "User Not Found" });
+        }
+        else {
+            res.json({ message: "User Deleted" });
+        }
+    })
+
+
+})
 
 
 app.get("/users", userAuth, async (req, res) => {
@@ -317,11 +348,11 @@ app.get("/component", (req, res) => {
 
 app.post("/component", adminAuth, (req, res) => {
     const { html, css, js, title } = req.body;
-    const category = req.body?.category || "general";
+    const category = req.body?.category?.toLowerCase() || "general";
 
     Comp.create({ title: title, html: html, css: css, js: js, category: category }).then((data) => {
         console.log(data);
-        res.json({ message: "Component Saved" })
+        res.json({ message: "Component Saved", id: data._id })
     })
 });
 
@@ -413,6 +444,21 @@ app.get("/unlike", userAuth, async (req, res) => {
 });
 
 
+app.get("/search", (req, res) => {
+    const q = req.query?.q;
+    if (!q) return res.status(401).json({ message: "Please Provide Query" });
+
+    Comp.find({
+        $or: [
+            { title: { $regex: q, $options: 'i' } },
+            { category: { $regex: q, $options: 'i' } }
+        ]
+    }).then((data) => {
+        res.send(data);
+    })
+
+    res.status(404).json({ message: "Not Found" });
+});
 
 
 app.listen(3000, () => {

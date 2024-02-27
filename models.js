@@ -10,13 +10,8 @@ export const Comp = mongoose.model("Comp", mongoose.Schema({
         type: String,
         required: true,
     },
-    css: {
-        type: String,
-        required: true,
-    },
-    js: {
-        type: String,
-    },
+    css: String,
+    js: String,
     category: {
         type: String,
         required: true
@@ -38,13 +33,3 @@ export const User = mongoose.model("User", mongoose.Schema({
     password: String,
     isAdmin: Boolean,
 }));
-
-
-// User.create({
-//     name: "Admin",
-//     email: "admin@gmail.com",
-//     password: "admin",
-//     isAdmin: true,
-// }).then((data) => {
-//     console.log(data);
-// })
