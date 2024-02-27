@@ -453,10 +453,13 @@ app.get("/search", (req, res) => {
             { category: { $regex: q, $options: 'i' } }
         ]
     }).then((data) => {
-        res.send(data);
+        if (data.length == 0) {
+            res.status(404).json({ message: "No Results Found" });
+        }
+        else {
+            res.send(data)
+        }
     })
-
-    res.status(404).json({ message: "Not Found" });
 });
 
 
