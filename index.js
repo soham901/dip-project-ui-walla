@@ -161,7 +161,7 @@ app.post("/signup", (req, res) => {
         if (data) {
             return res.status(401).json({ message: "User Already Exists" });
         }
-        User.create({ name: name, email: email.toString().toLowerCase(), password: password, avatarId: Math.floor(Math.random() * 7) + 1 }).then((data) => {
+        User.create({ name: name, email: email.toString().toLowerCase(), password: password, photoId: Math.floor(Math.random() * 7).toString() + 1 }).then((data) => {
             return res.json({ message: "User Created" });
         })
     }));
