@@ -28,9 +28,7 @@ app.use(bodyParser.json())
 
 
 const userAuth = (req, res, next) => {
-
     console.log("userAuth");
-
     const token = req.headers?.authorization?.split(" ")[1];
     if (token) {
         try {
@@ -58,9 +56,7 @@ const userAuth = (req, res, next) => {
 
 
 const adminAuth = (req, res, next) => {
-
     console.log("adminAuth");
-
     const token = req.headers?.authorization?.split(" ")[1];
     if (token) {
         try {
@@ -95,7 +91,6 @@ const adminAuth = (req, res, next) => {
 
 app.get("/", (req, res) => {
     res.json({ message: "Hello from server" })
-    //res.sendFile('index.html', { root: path.join(__dirname, 'public') });
 });
 
 
@@ -222,6 +217,9 @@ app.get("/component", (req, res) => {
     const id = req.query?.id;
     const preview = req.query?.preview;
 
+    const page = req.query?.page || 1;
+    const pageSize = 8;
+
     if (id) {
         if (preview == "true") {
             console.log("preview");
@@ -288,7 +286,7 @@ app.get("/component", (req, res) => {
                 </body>
                 </html>
                 `;
-                res.setHeader('Content-disposition', 'attachment; filename=component.html');
+                res.setHeader('Content-disposition', 'attachment; filename=' + data.title + '-' + data.category + '.html');
                 res.setHeader('Content-type', 'text/html');
                 res.charset = 'UTF-8';
                 res.write(code);
@@ -311,33 +309,49 @@ app.get("/component", (req, res) => {
             const email = jwt.verify(token, "SECRET");
             User.findOne({ email: email }).then((user) => {
                 if (!user) return res.status(401).json({ message: "Invalid Token" });
-                Comp.find({ category: category }).then((data) => {
+                const skip = (page - 1) * pageSize;
+                const limit = pageSize;
+                Comp.find({ category: category }).skip(skip).limit(limit).then((data) => {
                     var docForMap = JSON.parse(JSON.stringify(data));
                     docForMap.forEach((doc) => {
                         if (doc.likes.includes(user._id.toString())) doc.isLiked = true;
                         else doc.isLiked = false;
                     })
-                    res.send(docForMap);
+                    Comp.countDocuments({ category: category }).then((count) => {
+                        const totalPages = Math.ceil(count / pageSize);
+                        res.send({ data: docForMap, currentPage: Number(page), pageSize, totalPages });
+                    });
                 })
             })
         }
         else {
             const token = req.headers?.authorization?.split(" ")[1];
             if (!token) {
-                return Comp.find().then((data) => {
-                    res.send(data);
+                const limit = pageSize;
+                const skip = (page - 1) * pageSize;
+                return Comp.find().skip(skip).limit(limit).then((data) => {
+                    var docForMap = JSON.parse(JSON.stringify(data));
+                    Comp.countDocuments().then((count) => {
+                        const totalPages = Math.ceil(count / pageSize);
+                        res.send({ data: docForMap, currentPage: Number(page), pageSize, totalPages });
+                    });
                 })
             }
             const email = jwt.verify(token, "SECRET");
             User.findOne({ email: email }).then((user) => {
                 if (!user) return res.status(401).json({ message: "Invalid Token" });
-                Comp.find().then((data) => {
+                const skip = (page - 1) * pageSize;
+                const limit = pageSize;
+                Comp.find({ category: category }).skip(skip).limit(limit).then((data) => {
                     var docForMap = JSON.parse(JSON.stringify(data));
                     docForMap.forEach((doc) => {
                         if (doc.likes.includes(user._id.toString())) doc.isLiked = true;
                         else doc.isLiked = false;
                     })
-                    res.send(docForMap);
+                    Comp.countDocuments({ category: category }).then((count) => {
+                        const totalPages = Math.ceil(count / pageSize);
+                        res.send({ data: docForMap, currentPage: Number(page), pageSize, totalPages });
+                    });
                 })
             })
         }
