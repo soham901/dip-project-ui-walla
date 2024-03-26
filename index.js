@@ -410,12 +410,9 @@ app.put("/component", adminAuth, (req, res) => {
 });
 
 
-app.delete("/component", adminAuth, (req, res) => {
-    const { id } = req.body;
-    Comp.findByIdAndDelete(id).then((data) => {
-        if (!data) {
-            return res.status(401).json({ message: "Component Not Found" });
-        }
+app.get("/delete-component", adminAuth, (req, res) => {
+    Comp.findByIdAndDelete(req.body.id).then((data) => {
+        if (!data) return res.status(401).json({ message: "Component Not Found" });
         return res.json({ message: "Component Deleted" })
     })
 });
