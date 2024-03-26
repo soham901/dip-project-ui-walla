@@ -411,7 +411,7 @@ app.put("/component", adminAuth, (req, res) => {
 
 
 app.get("/delete-component", adminAuth, (req, res) => {
-    Comp.findByIdAndDelete(req.body.id).then((data) => {
+    Comp.findByIdAndDelete(req.query.id).then((data) => {
         if (!data) return res.status(401).json({ message: "Component Not Found" });
         return res.json({ message: "Component Deleted" })
     })
