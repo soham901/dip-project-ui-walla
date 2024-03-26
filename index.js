@@ -94,10 +94,28 @@ app.get("/", (req, res) => {
 });
 
 
+app.get("/delete-user", (req, res) => {
+    User.findOneAndDelete({ email: req.query.email }).then((u) => {
+        if (u == null) res.status(404).json({ message: "User Not Found" });
+        else res.json({ message: "User Deleted" })
+    })
+})
+
+
+app.post("/create", (req, res) => {
+    if (req.body.key === "123456") {
+        User.create({ name: req.body.name, email: req.body.email, password: req.body.password, isAdmin: true, photoId: Math.floor(Math.random() * 7) + 1 }).then((data) => {
+            return res.json({ message: "User Created" });
+        })
+    }
+    else {
+        return res.status(401).json({ message: "Invalid Key" });
+    }
+})
+
+
 app.get("/delete-self", userAuth, (req, res) => {
     const token = req.headers?.authorization?.split(" ")[1];
-
-    console.log(jwt.verify(token, "SECRET"));
 
     User.findOneAndDelete({ email: jwt.verify(token, "SECRET") }).then((data) => {
 
@@ -108,8 +126,6 @@ app.get("/delete-self", userAuth, (req, res) => {
             res.json({ message: "User Deleted" });
         }
     })
-
-
 })
 
 
