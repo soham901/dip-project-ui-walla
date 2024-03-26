@@ -3,15 +3,10 @@ import cors from "cors";
 import jwt from 'jsonwebtoken';
 import dotenv from "dotenv"
 import bodyParser from "body-parser";
-
 dotenv.config({ path: './.env' });
-
 import { connectDB } from "./db.js";
-
 connectDB();
-
 import { Comp, User } from "./models.js";
-
 const app = express();
 
 app.use(cors({
@@ -20,12 +15,9 @@ app.use(cors({
     methods: ['GET', 'POST', 'DELETE', 'PUT', 'PATCH', 'OPTIONS'],
 }));
 
-
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-
-
 
 const userAuth = (req, res, next) => {
     console.log("userAuth");
