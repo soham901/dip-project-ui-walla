@@ -312,6 +312,11 @@ app.get("/component", (req, res) => {
         const category = req.query?.category;
 
         if (category) {
+            const token = req.headers?.authorization?.split(" ")[1];
+            if (!token) return res.status(401).json({ message: "Invalid Token" });
+            const email = jwt.verify(token, "SECRET");
+            User.findOne({ email: email }).then((user) => {
+                if (!user) return res.status(401).json({ message: "Invalid Token" });
                 const skip = (page - 1) * pageSize;
                 const limit = pageSize;
                 Comp.find({ category: category }).skip(skip).limit(limit).then((data) => {
